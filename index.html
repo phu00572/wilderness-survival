@@ -309,7 +309,7 @@
       <div class="eyebrow">GOAL</div>
       <h2>最大的目標：讓自己活得久一點</h2>
       <p class="lead">野外求生不是逞英雄脫困，而是<b style="color:var(--accent)">用最小的消耗撐到獲救</b>。</p>
-      <div class="quote-box">「別總想靠自己解決問題。活著回來的人，才有被罵的機會。」</div>
+      <div class="quote-box" style="max-width:none; white-space:nowrap; text-align:center;">「別總想靠自己解決問題。活著回來的人，才有被罵的機會。」</div>
       <p class="lead" style="margin-top:0.3em;">要活得久，就靠三件事同時運作 —— 下一頁的<b style="color:var(--accent2)">求生三角形</b>。</p>
     </section>
 
@@ -352,15 +352,15 @@
           </ul>
         </div>
       </div>
-      <div class="principle-band">📍 關鍵原則：讓自己<b>留在好位置</b>、把體溫守住，就能<b>提高生存機率</b>。</div>
+      <div class="principle-band">📍 關鍵原則：讓自己<b>留在好救位置</b>、把體溫守住，就能<b>提高生存機率</b>。</div>
     </section>
 
     <!-- 6 333 原則 -->
     <section id="slide-chart" data-background-image="images/principle333.png" data-background-opacity="0.16" data-background-size="cover">
       <h2>333 原則：先禦寒，再水，最後食物</h2>
       <p class="lead" style="margin-bottom:0.2em;">失溫 3 小時就致命，缺水約 3 天，缺食約 3 週。所以自救的第一順位永遠是<b style="color:var(--accent)">保暖</b>。</p>
-      <div style="max-width:720px; height:250px; margin:0 auto;"><canvas id="chart-canvas"></canvas></div>
-      <div class="callout" style="margin-top:0.9em;">💡 切勿花力氣找食物而導致失溫、脫水 —— 人沒那麼容易餓死，卻可能幾小時內失溫。</div>
+      <div style="max-width:720px; height:250px; margin:0 auto 0.2em;"><canvas id="chart-canvas"></canvas></div>
+      <div class="callout" style="margin-top:1.6em; max-width:none; white-space:nowrap;">💡 切勿花力氣找食物而導致失溫、脫水 —— 人沒那麼容易餓死，卻可能幾小時內失溫。</div>
     </section>
 
     <!-- 7 投票：優先順序 -->
@@ -380,8 +380,7 @@
         <b>隔絕地面</b>：屁股下墊背包 / 衣物 / 大石頭，<span class="hot">絕不直接坐冰冷潮濕地面</span>。<br>
         <b>保持乾燥</b>：貼身衣物絕不能是濕的，淋濕立刻換乾衣。<br>
         <b>待援不亂走</b>：只要待在路徑上，多半 <span class="hot">2～3 天</span>內就會遇到搜救隊。<br>
-        <b>增加能見度</b>：營地四周擺鮮豔物品（間隔 1m 以上）、高處掛外帳 / 背包套。<br>
-        <b>留下痕跡</b>：真要移動，每 3～5m 折樹枝 / 堆石，讓搜救循跡找到你。
+        <b>增加能見度</b>：營地四周擺鮮豔物品（間隔 1m 以上）、高處掛外帳 / 背包套。
       </div>
       <div class="callout warn">⚠️ 迷路時下切溪谷是大忌 —— 落差大易受傷、水聲蓋過呼救、溫度低易失溫。罹難大體約 8 成在溪谷尋獲。</div>
     </section>
@@ -408,7 +407,7 @@
         <div class="adv-card acc-top"><div class="adv-title" style="color:var(--accent)">繩</div>
           <div class="adv-desc">營繩 ×2<br>亮色大力膠帶<br><span style="color:#8aa">搭雨棚、固定、修補</span></div></div>
       </div>
-      <div class="list-card" style="margin-top:0.5em;">
+      <div class="list-card" style="margin-top:0.5em; max-width:none; white-space:nowrap; text-align:center;">
         <b style="color:var(--accent2)">保暖核心</b>：大塑膠袋 ×2、緊急救生毯 ×1
         —— <span class="hot">身上裹救生毯、再套塑膠袋</span>，才是終極保暖解方。
       </div>
@@ -651,6 +650,7 @@
         datasets:[{ label:'致命前可撐時間（小時）', data:[3,72,504],
           backgroundColor:['#e8643a','#4fc3f7','#81c784'], borderRadius:8 }] },
       options:{ responsive:true, maintainAspectRatio:false,
+        layout:{ padding:{ top:4, bottom:6 } },
         plugins:{ legend:{ labels:{ color:'#ccc' } },
           tooltip:{ callbacks:{ label:(c)=>{
             const v=c.parsed.y; const t= v<24? v+' 小時' : (v/24)+' 天'; return ' 約 '+t; } } } },
