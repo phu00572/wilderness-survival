@@ -46,6 +46,8 @@
 
     /* === 通用小標 / 引導字 === */
     .lead { font-size:0.5em; color:#cfd8e3; max-width:36em; margin:0 auto 0.4em; text-wrap:balance; line-height:1.7; text-align:center; }
+    /* 強制水平置中：覆蓋 Reveal 主題 p 的 margin（其特異度較高，否則 margin:auto 失效導致靠左）*/
+    .reveal .slides section .lead { margin-left:auto; margin-right:auto; }
     .eyebrow { color:var(--accent); font-weight:700; font-size:0.5em; letter-spacing:0.06em; }
 
     /* === 優勢卡（並列特點）=== */
