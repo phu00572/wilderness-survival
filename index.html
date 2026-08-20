@@ -41,11 +41,11 @@
       padding:4px 14px; border-radius:20px; font-size:0.5em;
       letter-spacing:0.08em; margin-bottom:0.8em; font-weight:600;
     }
-    .title-slide .subtitle { font-size:0.6em; color:#bbb; margin-top:0.9em; line-height:1.9; }
+    .title-slide .subtitle { font-size:0.6em; color:#bbb; margin-top:0.9em; line-height:1.9; text-wrap:balance; }
     .title-slide .author { margin-top:1.6em; font-size:0.42em; color:#888; }
 
     /* === 通用小標 / 引導字 === */
-    .lead { font-size:0.5em; color:#cfd8e3; max-width:22em; margin:0 auto 0.4em; }
+    .lead { font-size:0.5em; color:#cfd8e3; max-width:36em; margin:0 auto 0.4em; text-wrap:balance; line-height:1.7; }
     .eyebrow { color:var(--accent); font-weight:700; font-size:0.5em; letter-spacing:0.06em; }
 
     /* === 優勢卡（並列特點）=== */
@@ -88,8 +88,8 @@
     /* === 提示 callout === */
     .callout {
       background:rgba(232,100,58,0.10); border:1px solid rgba(232,100,58,0.35);
-      border-radius:10px; padding:12px 18px; margin:0.6em auto 0; max-width:26em;
-      font-size:0.4em; color:#f2d8cc; line-height:1.7; text-align:left;
+      border-radius:10px; padding:12px 18px; margin:0.6em auto 0; max-width:38em;
+      font-size:0.4em; color:#f2d8cc; line-height:1.75; text-align:center; text-wrap:balance;
     }
     .callout.blue { background:rgba(79,195,247,0.10); border-color:rgba(79,195,247,0.35); color:#cfe9f7; }
     .callout.warn { background:rgba(255,183,77,0.10); border-color:rgba(255,183,77,0.4); color:#f5e2c2; }
@@ -117,6 +117,32 @@
       position:absolute; top:120px; left:50%; transform:translateX(-50%);
       font-size:0.4em; color:var(--accent); font-weight:800; letter-spacing:0.1em;
     }
+
+    /* === 求生三角形 三支柱 === */
+    .tri-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:1120px; margin:0.3em auto 0; }
+    .pillar { background:rgba(255,255,255,0.05); border-radius:12px; padding:15px 16px 13px; border-top:4px solid var(--accent2); text-align:left; }
+    .pillar.green  { border-top-color:var(--success); }
+    .pillar.blue   { border-top-color:var(--accent2); }
+    .pillar.orange { border-top-color:var(--accent); }
+    .pillar-head { display:flex; align-items:center; gap:10px; font-size:0.6em; font-weight:800; }
+    .pillar-head img { width:40px; height:40px; object-fit:contain; filter:drop-shadow(0 0 8px rgba(79,195,247,0.5)); }
+    .pillar-head .pn { display:flex; flex-direction:column; }
+    .pillar-head .pn small { font-size:0.5em; color:#8a94a2; font-weight:600; letter-spacing:0.08em; }
+    .pillar.green  .pillar-head { color:var(--success); }
+    .pillar.blue   .pillar-head { color:var(--accent2); }
+    .pillar.orange .pillar-head { color:var(--accent); }
+    .pillar-sub { font-size:0.4em; color:#aeb8c4; margin:6px 0 8px; }
+    .pillar ul { list-style:none; padding:0; margin:0; font-size:0.4em; color:#dbe2ea; line-height:1.7; }
+    .pillar ul li { padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+    .pillar ul li:last-child { border-bottom:none; }
+    .pillar ul li b { color:#fff; }
+    .principle-band {
+      margin:0.7em auto 0; max-width:1120px;
+      background:linear-gradient(90deg, rgba(129,199,132,0.16), rgba(79,195,247,0.14), rgba(232,100,58,0.16));
+      border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:11px 18px;
+      font-size:0.46em; color:#eef2f6; font-weight:700; letter-spacing:0.02em;
+    }
+    .principle-band b { color:var(--warn); }
 
     /* === VS 兩欄 === */
     .vs-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:0.5em; }
@@ -208,6 +234,7 @@
     body.mobile .adv-grid, body.mobile .adv-grid.cols-3, body.mobile .adv-grid.cols-4{ grid-template-columns:1fr 1fr; }
     body.mobile .vs-grid{ grid-template-columns:1fr; }
     body.mobile .triangle-wrap{ transform:scale(0.8); margin-top:-10px; }
+    body.mobile .tri-cards{ grid-template-columns:1fr; }
     body.mobile .wc-form{ display:flex; gap:8px; align-items:center; }
     body.mobile .wc-form .ui-input{ flex:1 1 auto; min-width:0; font-size:16px; }
     body.mobile .wc-form #wc-btn{ width:auto !important; margin-top:0 !important; flex:0 0 auto; white-space:nowrap; }
@@ -288,15 +315,49 @@
     </section>
 
     <!-- 5 求生三角形 -->
-    <section data-background-image="images/triangle.png" data-background-opacity="0.16" data-background-size="cover">
-      <h2>求生三角形</h2>
-      <p class="lead">三個角缺一不可：先讓別人「找得到你」，再讓自己「撐得到那時候」。</p>
-      <div class="triangle-wrap">
-        <div class="tri-node top"><div class="tn-title">定位</div><div class="tn-sub">知道自己在哪<br>回報精確座標</div></div>
-        <div class="tri-node bl"><div class="tn-title">通報</div><div class="tn-sub">112 / 簡訊<br>讓搜救啟動</div></div>
-        <div class="tri-node br"><div class="tn-title">自救</div><div class="tn-sub">保暖不失溫<br>撐到獲救</div></div>
-        <div class="tri-center">活久一點</div>
+    <section data-background-image="images/triangle.png" data-background-opacity="0.14" data-background-size="cover">
+      <h2 style="margin-bottom:0.05em;">戶外求生三角形</h2>
+      <p class="lead" style="margin-bottom:0.5em;">
+        <span style="color:var(--success);font-weight:700;">定位</span> ·
+        <span style="color:var(--accent2);font-weight:700;">通報</span> ·
+        <span style="color:var(--accent);font-weight:700;">自救</span>　三個角缺一不可 ——
+        <b style="color:var(--warn)">沒有一個方法是保證有用</b>，要多重準備、靈活運用。</p>
+      <div class="tri-cards">
+        <div class="pillar green">
+          <div class="pillar-head"><img src="images/locate.png" alt=""><div class="pn">（一）定位<small>LOCATE</small></div></div>
+          <div class="pillar-sub">運用各種方式，標定你的所在地</div>
+          <ul>
+            <li>手機 <b>GPS</b> 定位</li>
+            <li>紙本地圖</li>
+            <li>森林指北針（辨方向）</li>
+            <li><b>PLB</b> 個人定位信標</li>
+            <li>inReach 衛星通訊</li>
+          </ul>
+        </div>
+        <div class="pillar blue">
+          <div class="pillar-head"><img src="images/report.png" alt=""><div class="pn">（二）通報<small>REPORT</small></div></div>
+          <div class="pillar-sub">運用各種方式，把你的位置傳出去</div>
+          <ul>
+            <li>衛星電話（全球通訊）</li>
+            <li>inReach 衛星裝置</li>
+            <li>手機（通話 / 簡訊 <b>112</b>）</li>
+            <li>無線電（對講機）</li>
+            <li>隊友協助（互相救援）</li>
+          </ul>
+        </div>
+        <div class="pillar orange">
+          <div class="pillar-head"><img src="images/selfrescue.png" alt=""><div class="pn">（三）自救<small>SURVIVE</small></div></div>
+          <div class="pillar-sub">運用各種方式，讓自己活下去</div>
+          <ul>
+            <li>生火、<b>保暖</b>不失溫</li>
+            <li>搭建庇護所（避風避雨）</li>
+            <li>觀察氣象（雲層 / 風向）</li>
+            <li>野外救護（處理外傷）</li>
+            <li>備齊裝備、保持冷靜</li>
+          </ul>
+        </div>
       </div>
+      <div class="principle-band">📍 關鍵原則：讓自己<b>留在好位置</b>、把體溫守住，就能<b>提高生存機率</b>。</div>
     </section>
 
     <!-- 6 333 原則 -->
