@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/night.css" />
   <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
       --accent:  #e8643a;
@@ -312,7 +311,7 @@
       <div class="eyebrow">GOAL</div>
       <h2>最大的目標：讓自己活得久一點</h2>
       <p class="lead">野外求生不是逞英雄脫困，而是<b style="color:var(--accent)">用最小的消耗撐到獲救</b>。</p>
-      <div class="quote-box" style="max-width:none; white-space:nowrap; text-align:center;">「別總想靠自己解決問題。活著回來的人，才有被罵的機會。」</div>
+      <div class="quote-box" style="max-width:768px; box-sizing:border-box; text-align:center;">「別總想靠自己解決問題。活著回來的人，才有被罵的機會。」</div>
       <p class="lead" style="margin-top:0.3em;">要活得久，就靠三件事同時運作 —— 下一頁的<b style="color:var(--accent2)">求生三角形</b>。</p>
     </section>
 
@@ -359,11 +358,27 @@
     </section>
 
     <!-- 6 333 原則 -->
-    <section id="slide-chart" data-background-image="images/principle333.png" data-background-opacity="0.16" data-background-size="cover">
+    <section data-background-image="images/principle333.png" data-background-opacity="0.16" data-background-size="cover">
       <h2>333 原則：先禦寒，再水，最後食物</h2>
-      <p class="lead" style="margin-bottom:0.2em;">失溫 3 小時就致命，缺水約 3 天，缺食約 3 週。所以自救的第一順位永遠是<b style="color:var(--accent)">保暖</b>。</p>
-      <div style="max-width:720px; height:250px; margin:0 auto 0.2em;"><canvas id="chart-canvas"></canvas></div>
-      <div class="callout" style="margin-top:1.6em; max-width:none; white-space:nowrap;">💡 切勿花力氣找食物而導致失溫、脫水 —— 人沒那麼容易餓死，卻可能幾小時內失溫。</div>
+      <p class="lead" style="margin-bottom:0.4em;">同樣缺乏，撐得住的時間差很大 —— 所以自救的第一順位永遠是<b style="color:var(--accent)">保暖</b>。</p>
+      <div class="adv-grid cols-3" style="max-width:1000px;">
+        <div class="adv-card acc-top">
+          <div class="adv-title" style="color:var(--accent)">失溫（保暖）</div>
+          <div style="font-size:1.5em; font-weight:800; color:var(--accent); line-height:1.05; margin:8px 0 6px;">3<span style="font-size:0.45em; font-weight:700;"> 小時</span></div>
+          <div class="adv-desc">體溫失守就<b style="color:#fff">致命</b><br>→ 第一順位</div>
+        </div>
+        <div class="adv-card">
+          <div class="adv-title">缺水</div>
+          <div style="font-size:1.5em; font-weight:800; color:var(--accent2); line-height:1.05; margin:8px 0 6px;">3<span style="font-size:0.45em; font-weight:700;"> 天</span></div>
+          <div class="adv-desc">脫水才成為<br>生存威脅</div>
+        </div>
+        <div class="adv-card">
+          <div class="adv-title">缺食</div>
+          <div style="font-size:1.5em; font-weight:800; color:var(--success); line-height:1.05; margin:8px 0 6px;">3<span style="font-size:0.45em; font-weight:700;"> 週</span></div>
+          <div class="adv-desc">人沒那麼<br>容易餓死</div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:0.8em;">💡 切勿花力氣找食物而導致失溫、脫水 —— 人沒那麼容易餓死，卻可能幾小時內失溫。</div>
     </section>
 
     <!-- 7 投票：優先順序 -->
@@ -614,8 +629,7 @@
     Reveal.configure({ width:n.width, height:n.height, margin:n.margin, center:n.center, touch:n.touch, view:null });
     Reveal.layout();
     setTimeout(()=>{ const id=Reveal.getCurrentSlide&&Reveal.getCurrentSlide()?.id;
-      if(id==='slide-wordcloud') window.drawWordCloud&&window.drawWordCloud();
-      if(id==='slide-chart') window.initChart&&window.initChart(); }, 250);
+      if(id==='slide-wordcloud') window.drawWordCloud&&window.drawWordCloud(); }, 250);
   }
   const ds = deckSize();
   document.body.classList.toggle('mobile', ds.mobile);
@@ -639,30 +653,6 @@
     document.getElementById('viz-divider').style.left = v + '%';
   });
 
-  // 333 圖表
-  let _chart = null;
-  window.initChart = function(){
-    if (typeof Chart==='undefined') return;
-    const ctx = document.getElementById('chart-canvas'); if(!ctx) return;
-    const box = ctx.parentElement.getBoundingClientRect();
-    if (box.width < 20){ setTimeout(window.initChart, 250); return; }
-    if (_chart){ _chart.resize(); return; }
-    _chart = new Chart(ctx, {
-      type:'bar',
-      data:{ labels:['失溫（保暖）','缺水','缺食'],
-        datasets:[{ label:'致命前可撐時間（小時）', data:[3,72,504],
-          backgroundColor:['#e8643a','#4fc3f7','#81c784'], borderRadius:8 }] },
-      options:{ responsive:true, maintainAspectRatio:false,
-        layout:{ padding:{ top:4, bottom:6 } },
-        plugins:{ legend:{ labels:{ color:'#ccc' } },
-          tooltip:{ callbacks:{ label:(c)=>{
-            const v=c.parsed.y; const t= v<24? v+' 小時' : (v/24)+' 天'; return ' 約 '+t; } } } },
-        scales:{ y:{ type:'logarithmic', ticks:{ color:'#aaa',
-              callback:(v)=>[3,12,24,72,168,504].includes(v)? v : '' },
-            grid:{ color:'rgba(255,255,255,0.08)' }, title:{ display:true, text:'小時（對數刻度）', color:'#888' } },
-          x:{ ticks:{ color:'#ddd', font:{ size:13 } }, grid:{ display:false } } } }
-    });
-  };
 
   // 手機防誤觸
   document.querySelectorAll('[data-prevent-swipe]').forEach(el => {
@@ -841,9 +831,7 @@
   Reveal.on('slidechanged', e => {
     const id = e.currentSlide?.id;
     if (id === 'slide-wordcloud') setTimeout(window.drawWordCloud, 150);
-    if (id === 'slide-chart')     setTimeout(window.initChart, 150);
   });
-  setTimeout(()=>{ if(Reveal.getCurrentSlide && Reveal.getCurrentSlide()?.id==='slide-chart') window.initChart(); }, 600);
 </script>
 
 </body>
