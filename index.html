@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>野外求生原理與保暖原則</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/night.css" />
+  <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --accent:  #e8643a;
+      --accent2: #4fc3f7;
+      --success: #81c784;
+      --warn:    #ffb74d;
+    }
+    .reveal { font-family: 'Segoe UI', 'Noto Sans TC', sans-serif; }
+    .reveal h1, .reveal h2, .reveal h3 {
+      font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
+      font-weight: 700; letter-spacing: -0.02em;
+    }
+    .reveal h1 { font-size: 2.1em; }
+    .reveal h2 { font-size: 1.4em; color: var(--accent2); margin-bottom: 0.3em; }
+    .reveal h3 { color: #fff; }
+    .reveal .progress { color: var(--accent); }
+    .reveal .fragment { opacity: 0.15; }
+    .reveal .fragment.visible { opacity: 1; }
+    .reveal p, .reveal li { line-height: 1.6; }
+
+    /* 背景暗罩：確保任何底圖上文字都清楚 */
+    .reveal .backgrounds .slide-background-content::after{
+      content:''; position:absolute; inset:0; background:rgba(7,11,18,0.42);
+    }
+
+    /* === 封面 === */
+    .title-slide { text-align: center; }
+    .title-slide .tag {
+      display:inline-block; background:var(--accent); color:#fff;
+      padding:4px 14px; border-radius:20px; font-size:0.5em;
+      letter-spacing:0.08em; margin-bottom:0.8em; font-weight:600;
+    }
+    .title-slide .subtitle { font-size:0.6em; color:#bbb; margin-top:0.9em; line-height:1.9; }
+    .title-slide .author { margin-top:1.6em; font-size:0.42em; color:#888; }
+
+    /* === 通用小標 / 引導字 === */
+    .lead { font-size:0.5em; color:#cfd8e3; max-width:22em; margin:0 auto 0.4em; }
+    .eyebrow { color:var(--accent); font-weight:700; font-size:0.5em; letter-spacing:0.06em; }
+
+    /* === 優勢卡（並列特點）=== */
+    .adv-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:0.5em; }
+    .adv-grid.cols-3 { grid-template-columns:repeat(3,1fr); }
+    .adv-grid.cols-4 { grid-template-columns:repeat(4,1fr); }
+    .adv-card {
+      background:rgba(255,255,255,0.05); border-top:4px solid var(--accent2);
+      border-radius:8px; padding:16px 14px; text-align:center;
+    }
+    .adv-card.warn-top { border-top-color:var(--warn); }
+    .adv-card.acc-top  { border-top-color:var(--accent); }
+    .adv-card .adv-icon img {
+      width:60px; height:60px; object-fit:contain; display:block; margin:0 auto 8px;
+      filter: drop-shadow(0 0 10px rgba(79,195,247,0.55));
+    }
+    .adv-card .adv-title { font-size:0.5em; font-weight:700; color:var(--accent2); margin-bottom:6px; }
+    .adv-card.acc-top .adv-title { color:var(--accent); }
+    .adv-card .adv-desc { font-size:0.38em; color:#cbd3dc; line-height:1.6; }
+    .adv-card .adv-num { font-size:0.9em; font-weight:800; color:var(--accent); }
+
+    /* === 統計卡 === */
+    .stat-row { display:flex; gap:18px; justify-content:center; margin-top:0.7em; flex-wrap:wrap; }
+    .stat-card {
+      background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
+      border-radius:12px; padding:16px 22px; text-align:center; min-width:150px;
+    }
+    .stat-card .num { font-size:1.5em; font-weight:800; color:var(--accent); line-height:1; }
+    .stat-card .label { font-size:0.38em; color:#ccc; margin-top:8px; line-height:1.5; }
+
+    /* === 條列清單卡 === */
+    .list-card {
+      background:rgba(255,255,255,0.05); border-left:4px solid var(--accent2);
+      border-radius:8px; padding:14px 20px; margin:0.5em auto; max-width:26em;
+      text-align:left; font-size:0.44em; color:#dbe2ea; line-height:1.85;
+    }
+    .list-card b { color:var(--accent2); }
+    .list-card .hot { color:var(--accent); font-weight:700; }
+
+    /* === 提示 callout === */
+    .callout {
+      background:rgba(232,100,58,0.10); border:1px solid rgba(232,100,58,0.35);
+      border-radius:10px; padding:12px 18px; margin:0.6em auto 0; max-width:26em;
+      font-size:0.4em; color:#f2d8cc; line-height:1.7; text-align:left;
+    }
+    .callout.blue { background:rgba(79,195,247,0.10); border-color:rgba(79,195,247,0.35); color:#cfe9f7; }
+    .callout.warn { background:rgba(255,183,77,0.10); border-color:rgba(255,183,77,0.4); color:#f5e2c2; }
+
+    /* === 引用 === */
+    .quote-box {
+      background:rgba(255,255,255,0.05); border-left:4px solid var(--accent);
+      border-radius:8px; padding:18px 22px; margin:0.7em auto; max-width:24em;
+      font-size:0.5em; color:#e4e9ef; font-style:italic; line-height:1.8; text-align:left;
+    }
+
+    /* === 三角形圖 === */
+    .triangle-wrap { position:relative; width:420px; height:300px; margin:0.4em auto 0; }
+    .tri-node {
+      position:absolute; width:120px; text-align:center;
+      background:rgba(79,195,247,0.12); border:1px solid rgba(79,195,247,0.4);
+      border-radius:12px; padding:10px 6px;
+    }
+    .tri-node .tn-title { font-size:0.5em; font-weight:800; color:var(--accent2); }
+    .tri-node .tn-sub { font-size:0.32em; color:#bcd; margin-top:2px; }
+    .tri-node.top  { top:0; left:150px; }
+    .tri-node.bl   { bottom:0; left:20px; }
+    .tri-node.br   { bottom:0; right:20px; }
+    .tri-center {
+      position:absolute; top:120px; left:50%; transform:translateX(-50%);
+      font-size:0.4em; color:var(--accent); font-weight:800; letter-spacing:0.1em;
+    }
+
+    /* === VS 兩欄 === */
+    .vs-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:0.5em; }
+    .vs-col { background:rgba(255,255,255,0.05); border-radius:12px; padding:16px 18px; text-align:left; }
+    .vs-col.left-col { border-top:3px solid var(--warn); }
+    .vs-col.right-col { border-top:3px solid var(--success); }
+    .vs-label { font-size:0.55em; font-weight:800; margin-bottom:8px; }
+    .vs-col.left-col .vs-label { color:var(--warn); }
+    .vs-col.right-col .vs-label { color:var(--success); }
+    .vs-col ul { font-size:0.4em; list-style:none; padding:0; margin:0; color:#d8dee6; }
+    .vs-col ul li { padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.06); line-height:1.6; }
+    .vs-col ul li:last-child { border-bottom:none; }
+    .vs-col ul li::before { content:"✦ "; opacity:0.5; }
+
+    /* === 互動通用 === */
+    .ui-input {
+      width:100%; padding:9px 12px; border-radius:8px;
+      border:1px solid rgba(79,195,247,0.3); background:rgba(255,255,255,0.08);
+      color:#fff; font-size:13px; box-sizing:border-box; font-family:inherit; outline:none;
+    }
+    .ui-btn {
+      padding:9px 14px; background:var(--accent2); color:#0d1117; border:none;
+      border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; font-family:inherit;
+    }
+    .ui-btn:disabled { opacity:0.5; cursor:default; }
+    .qhead { font-size:1.0em; margin-bottom:0.4em; }
+    .live-badge {
+      display:inline-block; background:#ff4757; color:#fff; padding:2px 8px; border-radius:10px;
+      font-size:0.45em; vertical-align:middle; animation:pulse 1.5s infinite; margin-left:8px;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.55;} }
+
+    .qa-item {
+      background:rgba(255,255,255,0.06); border-left:3px solid var(--accent);
+      border-radius:8px; padding:10px 12px; margin-bottom:8px; font-size:14px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .qa-text { flex:1; color:#eee; line-height:1.5; text-align:left; }
+    .qa-like {
+      flex:0 0 auto; background:rgba(232,100,58,0.15); border:1px solid rgba(232,100,58,0.4);
+      color:var(--accent); border-radius:20px; padding:4px 10px; cursor:pointer;
+      font-size:13px; font-family:inherit; white-space:nowrap;
+    }
+
+    /* === 全域提問牆側邊欄 === */
+    #qa-sidebar {
+      position:fixed; top:0; left:0; height:100vh; width:340px;
+      background:linear-gradient(180deg,#141a2e,#0d1117);
+      border-right:1px solid rgba(79,195,247,0.25);
+      box-shadow:6px 0 30px rgba(0,0,0,0.55);
+      transform:translateX(-100%); transition:transform .35s ease; z-index:1000;
+    }
+    @media (max-width:380px){ #qa-sidebar{ width:300px; } }
+    #qa-sidebar.open { transform:translateX(0); }
+    #qa-sidebar .qa-inner { display:flex; flex-direction:column; height:100%; padding:26px 20px; box-sizing:border-box; }
+    #qa-handle {
+      position:absolute; right:-46px; top:50%; transform:translateY(-50%);
+      width:46px; padding:18px 0; background:var(--accent); color:#fff; border:none;
+      border-radius:0 12px 12px 0; cursor:pointer;
+      display:flex; flex-direction:column; align-items:center; gap:6px; font-family:inherit;
+      box-shadow:3px 0 12px rgba(0,0,0,0.4);
+    }
+    #qa-handle .qh-dot { width:7px; height:7px; border-radius:50%; background:#fff; animation:pulse 1.5s infinite; }
+    #qa-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); opacity:0; pointer-events:none; transition:opacity .35s; z-index:999; }
+    #qa-overlay.show { opacity:1; pointer-events:auto; }
+
+    /* === VIZ 前後對比 === */
+    .viz-face { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:22px; text-align:center; }
+    .viz-face .vf-title { font-size:0.6em; font-weight:800; margin-bottom:8px; }
+    .viz-face ul { list-style:none; padding:0; margin:0; font-size:0.4em; line-height:1.7; color:#e6ebf1; }
+
+    /* === 封底 === */
+    .end-slide { text-align:center; }
+    .end-slide .big { font-size:2.6em; margin-bottom:0.1em; }
+    .end-slide .tagline { font-size:0.55em; color:#bbb; margin-top:0.4em; }
+
+    /* === 手機 === */
+    body.mobile .reveal .slides > section.present,
+    body.mobile .reveal .slides > section.past,
+    body.mobile .reveal .slides > section.future{
+      height:100%; box-sizing:border-box;
+      display:flex; flex-direction:column; justify-content:safe center;
+      overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
+      padding:16px 12px 64px; scrollbar-width:none;
+    }
+    body.mobile .reveal .slides > section::-webkit-scrollbar{ display:none; }
+    body.mobile .reveal .controls{ right:10px; bottom:10px; }
+    body.mobile .reveal .controls .controls-arrow{ width:52px; height:52px; }
+    body.mobile .adv-grid, body.mobile .adv-grid.cols-3, body.mobile .adv-grid.cols-4{ grid-template-columns:1fr 1fr; }
+    body.mobile .vs-grid{ grid-template-columns:1fr; }
+    body.mobile .triangle-wrap{ transform:scale(0.8); margin-top:-10px; }
+    body.mobile .wc-form{ display:flex; gap:8px; align-items:center; }
+    body.mobile .wc-form .ui-input{ flex:1 1 auto; min-width:0; font-size:16px; }
+    body.mobile .wc-form #wc-btn{ width:auto !important; margin-top:0 !important; flex:0 0 auto; white-space:nowrap; }
+    body.mobile #qa-handle{ top:auto; bottom:16px; right:-48px; transform:none;
+      width:48px; height:48px; padding:0; border-radius:50%; justify-content:center; align-items:center; }
+    body.mobile #qa-handle > span:nth-child(2), body.mobile #qa-handle .qh-dot{ display:none; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- 1 封面 -->
+    <section data-background-image="images/cover.png" data-background-opacity="0.5" data-background-size="cover">
+      <div class="title-slide">
+        <div class="tag">戶外安全 · 求生課程</div>
+        <h1>野外求生原理與保暖原則</h1>
+        <h2 style="color:var(--accent); margin-top:0.2em;">先禦寒，才能活得久一點</h2>
+        <p class="subtitle">求生三角形　·　333 原則　·　刁山小包<br>熱的三原理　·　三層穿衣　·　求生毯與塑膠袋保暖</p>
+        <p class="author">戶外教育 / 2026</p>
+      </div>
+    </section>
+
+    <!-- 2 破冰 文字雲 -->
+    <section id="slide-wordcloud" data-background-image="images/wordcloud.png" data-background-opacity="0.15" data-background-size="cover">
+      <h2 style="font-size:1.05em; margin-bottom:0.15em;">單日輕鬆行，需要帶保暖裝備嗎？</h2>
+      <p class="lead">聽到「野外求生」，你腦中第一個浮現的畫面是什麼？打一個關鍵詞。</p>
+      <div style="display:grid; grid-template-columns:250px 1fr; gap:14px; height:430px;">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="wc-form" style="background:rgba(255,255,255,0.06); border-radius:10px; padding:14px;">
+            <input id="wc-input" class="ui-input" type="text" placeholder="輸入關鍵詞…" maxlength="20" />
+            <button id="wc-btn" class="ui-btn" style="width:100%; margin-top:8px;">送出 ↵</button>
+          </div>
+          <div style="background:rgba(255,255,255,0.06); border-radius:10px; padding:14px; flex:1; overflow:hidden; display:flex; flex-direction:column;">
+            <div style="font-size:0.36em; color:var(--accent2); font-weight:700; margin-bottom:8px;">熱門答案 <span class="live-badge">LIVE</span></div>
+            <div id="wc-list" style="font-size:0.32em; overflow-y:auto; flex:1; color:#ccc;"></div>
+            <div style="margin-top:8px; font-size:0.3em; color:#666; border-top:1px solid rgba(255,255,255,0.08); padding-top:6px;">
+              總提交：<span id="wc-total" style="color:var(--accent); font-weight:700;">0</span>　不同答案：<span id="wc-unique" style="color:var(--accent2); font-weight:700;">0</span>
+            </div>
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border-radius:12px; overflow:hidden; position:relative; border:1px solid rgba(255,255,255,0.07);">
+          <canvas id="wc-canvas" style="width:100%; height:100%; display:block;"></canvas>
+          <div id="wc-empty" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#444; font-size:0.4em; text-align:center; pointer-events:none; line-height:2;">輸入第一個答案<br>文字雲就會出現 ✨</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 使用時機 -->
+    <section data-background-image="images/timing.png" data-background-opacity="0.16" data-background-size="cover">
+      <div class="eyebrow">WHEN</div>
+      <h2>什麼時候該切換到「求生模式」？</h2>
+      <p class="lead">原本的登山計畫被打斷、無法照原訂節奏安全下山時，就進入求生思維。出現任一狀況，先停下、重新評估。</p>
+      <div class="adv-grid cols-4">
+        <div class="adv-card"><div class="adv-icon"><img src="images/injury.png" alt=""></div>
+          <div class="adv-title">有人受傷</div>
+          <div class="adv-desc">骨折、扭傷、失足<br>無法自行移動</div></div>
+        <div class="adv-card"><div class="adv-icon"><img src="images/delay.png" alt=""></div>
+          <div class="adv-title">行程 Delay</div>
+          <div class="adv-desc">天黑仍未到營地<br>體力透支、迷途</div></div>
+        <div class="adv-card"><div class="adv-icon"><img src="images/climate.png" alt=""></div>
+          <div class="adv-title">氣候驟變</div>
+          <div class="adv-desc">強風、暴雨、驟降溫<br>失溫風險升高</div></div>
+        <div class="adv-card"><div class="adv-icon"><img src="images/terrain.png" alt=""></div>
+          <div class="adv-title">地形改變</div>
+          <div class="adv-desc">溪水暴漲、崩塌<br>落石、路徑中斷</div></div>
+      </div>
+      <div class="callout warn">💡 天色一暗、沒有照明時，恐慌亂走最容易失足。與其硬闖，不如提早躲雨、迫降，找地方紮營。</div>
+    </section>
+
+    <!-- 4 最大目標 -->
+    <section data-background-image="images/goal.png" data-background-opacity="0.2" data-background-size="cover">
+      <div class="eyebrow">GOAL</div>
+      <h2>最大的目標：讓自己活得久一點</h2>
+      <p class="lead">野外求生不是逞英雄脫困、硬撐下山，而是<b style="color:var(--accent)">用最小的消耗撐到獲救</b>。多數失溫、失蹤者，都是「硬撐」撐出來的。</p>
+      <div class="quote-box">「別總想靠自己解決問題。活著回來的人，才有被罵的機會。」</div>
+      <p class="lead" style="margin-top:0.3em;">要活得久，就靠三件事同時運作 —— 下一頁的<b style="color:var(--accent2)">求生三角形</b>。</p>
+    </section>
+
+    <!-- 5 求生三角形 -->
+    <section data-background-image="images/triangle.png" data-background-opacity="0.16" data-background-size="cover">
+      <h2>求生三角形</h2>
+      <p class="lead">三個角缺一不可：先讓別人「找得到你」，再讓自己「撐得到那時候」。</p>
+      <div class="triangle-wrap">
+        <div class="tri-node top"><div class="tn-title">定位</div><div class="tn-sub">知道自己在哪<br>回報精確座標</div></div>
+        <div class="tri-node bl"><div class="tn-title">通報</div><div class="tn-sub">112 / 簡訊<br>讓搜救啟動</div></div>
+        <div class="tri-node br"><div class="tn-title">自救</div><div class="tn-sub">保暖不失溫<br>撐到獲救</div></div>
+        <div class="tri-center">活久一點</div>
+      </div>
+    </section>
+
+    <!-- 6 333 原則 -->
+    <section id="slide-chart" data-background-image="images/principle333.png" data-background-opacity="0.16" data-background-size="cover">
+      <h2>333 原則：先禦寒，再水，最後食物</h2>
+      <p class="lead">失溫 3 小時就致命，缺水約 3 天，缺食約 3 週。所以自救的第一順位永遠是<b style="color:var(--accent)">保暖</b>。</p>
+      <div style="max-width:760px; height:300px; margin:0.2em auto 0;"><canvas id="chart-canvas"></canvas></div>
+      <div class="callout">💡 切勿花力氣找食物而導致失溫、脫水 —— 人沒那麼容易餓死，卻可能幾小時內失溫。</div>
+    </section>
+
+    <!-- 7 投票：優先順序 -->
+    <section id="slide-poll" data-background-image="images/poll.png" data-background-opacity="0.15" data-background-size="cover">
+      <h2>受困後，第一件事該先做什麼？</h2>
+      <p class="lead">假設你被困在稜線、天氣轉壞、身上有基本裝備。先投一票，再看下一頁。</p>
+      <div id="poll-priority-box" style="display:flex; flex-direction:column; gap:11px; margin-top:0.5em; max-width:640px; margin-left:auto; margin-right:auto;"></div>
+      <div style="font-size:0.36em; color:#888; text-align:center; margin-top:0.7em;">已投票：<span id="poll-priority-total">0</span> 人（可重複點改票）</div>
+    </section>
+
+    <!-- 8 自救：紮營 / 露宿 -->
+    <section data-background-image="images/camp.png" data-background-opacity="0.18" data-background-size="cover">
+      <h2>自救：安全紮營 / 緊急露宿</h2>
+      <p class="lead">發出求救後，在附近找<b style="color:var(--accent2)">最避風</b>的位置設緊急避難處，原地待援（稜線風大易失溫）。</p>
+      <div class="list-card">
+        <b>選點</b>：背風、避雨；四周有石頭擋風、大樹遮雨。<br>
+        <b>隔絕地面</b>：屁股下墊背包 / 衣物 / 大石頭，<span class="hot">絕不直接坐冰冷潮濕地面</span>。<br>
+        <b>保持乾燥</b>：貼身衣物絕不能是濕的，淋濕立刻換乾衣。<br>
+        <b>待援不亂走</b>：只要待在路徑上，多半 <span class="hot">2～3 天</span>內就會遇到搜救隊。<br>
+        <b>增加能見度</b>：營地四周擺鮮豔物品（間隔 1m 以上）、高處掛外帳 / 背包套。<br>
+        <b>留下痕跡</b>：真要移動，每 3～5m 折樹枝 / 堆石，讓搜救循跡找到你。
+      </div>
+      <div class="callout warn">⚠️ 迷路時下切溪谷是大忌 —— 落差大易受傷、水聲蓋過呼救、溫度低易失溫。罹難大體約 8 成在溪谷尋獲。</div>
+    </section>
+
+    <!-- 9 刁山小包 intro -->
+    <section data-background-image="images/kit.png" data-background-opacity="0.22" data-background-size="cover">
+      <div class="eyebrow">EMERGENCY KIT</div>
+      <h2>緊急避難包 ＝ 刁山小包</h2>
+      <p class="lead">「刁山」是台語的<b style="color:var(--accent)">卡在山上</b>。刁山小包，就是為了在山上緊急過夜、<b style="color:var(--accent2)">預防失溫</b>而準備的簡易求生組合 —— 自救、救人都好用。</p>
+      <div class="quote-box">「很多人覺得單日行程帶瓶水、午餐就好，幹嘛帶保暖？<br>—— 山裡過一夜，沒帳篷睡袋，你要怎麼不失溫？」</div>
+      <p class="lead" style="margin-top:0.2em;">核心口訣：<b style="color:var(--accent2)">刀 · 燈 · 火 · 繩</b>。</p>
+    </section>
+
+    <!-- 10 刀燈火繩 清單 -->
+    <section data-background-image="images/kit.png" data-background-opacity="0.14" data-background-size="cover">
+      <h2>刀 · 燈 · 火 · 繩：小包清單</h2>
+      <div class="adv-grid cols-4">
+        <div class="adv-card acc-top"><div class="adv-title" style="color:var(--accent)">燈</div>
+          <div class="adv-desc">頭燈 ×1<br><span style="color:#8aa">照明、對空求救反光</span></div></div>
+        <div class="adv-card acc-top"><div class="adv-title" style="color:var(--accent)">火</div>
+          <div class="adv-desc">打火機 ×2<br>鋁殼小蠟燭 ×2<br><span style="color:#8aa">生火、回溫、安定心神</span></div></div>
+        <div class="adv-card acc-top"><div class="adv-title" style="color:var(--accent)">刀</div>
+          <div class="adv-desc">小刀 ×1<br><span style="color:#8aa">切割、開孔、處理裝備</span></div></div>
+        <div class="adv-card acc-top"><div class="adv-title" style="color:var(--accent)">繩</div>
+          <div class="adv-desc">營繩 ×2<br>亮色大力膠帶<br><span style="color:#8aa">搭雨棚、固定、修補</span></div></div>
+      </div>
+      <div class="list-card" style="margin-top:0.5em;">
+        <b style="color:var(--accent2)">保暖核心</b>：大塑膠袋 ×2、緊急救生毯 ×1
+        —— <span class="hot">身上裹救生毯、再套塑膠袋</span>，才是終極保暖解方。
+      </div>
+      <div class="callout blue">💡 實務上「封閉式」大垃圾袋的保暖擋風 &gt; 「開放式」救生毯（頭會露出吹風）。兩個都帶，一次滿足。</div>
+    </section>
+
+    <!-- 11 熱的三原理 -->
+    <section data-background-image="images/heat3.png" data-background-opacity="0.16" data-background-size="cover">
+      <div class="eyebrow">WARMTH · 原理</div>
+      <h2>熱，怎麼從身體跑掉？</h2>
+      <p class="lead">要保暖，先懂體溫怎麼流失。阻斷這幾條路，就是所有保暖裝備的原理。</p>
+      <div class="adv-grid cols-4">
+        <div class="adv-card"><div class="adv-icon"><img src="images/conduction.png" alt=""></div>
+          <div class="adv-title">傳導</div>
+          <div class="adv-desc">直接接觸冷物<br>傳走熱量</div></div>
+        <div class="adv-card"><div class="adv-icon"><img src="images/convection.png" alt=""></div>
+          <div class="adv-title">對流</div>
+          <div class="adv-desc">風/水流動帶走熱<br>風寒·水寒效應</div></div>
+        <div class="adv-card"><div class="adv-icon"><img src="images/radiation.png" alt=""></div>
+          <div class="adv-title">輻射</div>
+          <div class="adv-desc">以紅外線散出<br>無風乾燥時主因</div></div>
+        <div class="adv-card"><div class="adv-icon"><img src="images/evaporation.png" alt=""></div>
+          <div class="adv-title">蒸散</div>
+          <div class="adv-desc">汗/雨/呼吸水氣<br>蒸發帶走熱</div></div>
+      </div>
+      <div class="callout">💡 <b>水寒效應</b>：身體潮濕時散熱是乾燥的 <span style="color:var(--warn);font-weight:700;">25 倍</span>。保持乾燥，是預防失溫的最高原則。</div>
+    </section>
+
+    <!-- 12 三層穿衣 -->
+    <section data-background-image="images/layers.png" data-background-opacity="0.16" data-background-size="cover">
+      <h2>洋蔥式三層穿衣</h2>
+      <p class="lead">從裡到外分工，各自對付一種散熱途徑。</p>
+      <div class="adv-grid cols-3">
+        <div class="adv-card"><div class="adv-icon"><img src="images/wick.png" alt=""></div>
+          <div class="adv-title">內層 · 排汗層</div>
+          <div class="adv-desc">吸濕排汗、保持乾燥<br>對付「蒸散」失溫<br><span style="color:var(--warn)">切忌棉質</span></div></div>
+        <div class="adv-card"><div class="adv-icon"><img src="images/insulate.png" alt=""></div>
+          <div class="adv-title">中層 · 保暖層</div>
+          <div class="adv-desc">羽絨/刷毛抓住空氣<br>形成不流動空氣層<br>阻「輻射」與「對流」</div></div>
+        <div class="adv-card"><div class="adv-icon"><img src="images/shell.png" alt=""></div>
+          <div class="adv-title">外層 · 防護層</div>
+          <div class="adv-desc">防風防水<br>擋住「對流」<br>把暖空氣鎖在裡面</div></div>
+      </div>
+      <div class="callout blue">💡 保暖的關鍵不是衣服本身，而是纖維抓住的<b>「不流動空氣層」</b>。求生毯，就是幫這層空氣加上一個蓋子。</div>
+    </section>
+
+    <!-- 13 求生毯 結構特性 + 投票 -->
+    <section id="slide-poll2" data-background-image="images/blanket.png" data-background-opacity="0.18" data-background-size="cover">
+      <h2>求生毯：結構與特性</h2>
+      <div class="vs-grid" style="max-width:820px; margin-left:auto; margin-right:auto;">
+        <div class="vs-col right-col">
+          <div class="vs-label">它很強的地方</div>
+          <ul>
+            <li>鍍鋁 PET 薄膜，<b>反射身體輻射熱</b></li>
+            <li>密不透風，<b>阻對流、防風防水</b></li>
+            <li>比裸身可減少約 80% 熱流失</li>
+            <li>金面反光求救、銀面反射體溫</li>
+          </ul>
+        </div>
+        <div class="vs-col left-col">
+          <div class="vs-label">它的罩門</div>
+          <ul>
+            <li>鋁膜本身<b>高度導熱</b></li>
+            <li>完全不透氣 → 內部易<b>反潮</b>積汗</li>
+            <li>開放式，頭易露出吹風</li>
+          </ul>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:0.5em;"><b style="color:var(--accent)">先猜猜：</b>衣物乾燥時，求生毯貼身還是包外層更保暖？</p>
+      <div id="poll-blanket-box" style="display:flex; flex-direction:column; gap:9px; max-width:640px; margin:0.2em auto 0;"></div>
+      <div style="font-size:0.34em; color:#888; text-align:center; margin-top:0.4em;">已投票：<span id="poll-blanket-total">0</span> 人</div>
+    </section>
+
+    <!-- 14 VIZ 貼身 vs 外層 -->
+    <section id="slide-viz" data-background-image="images/blanket.png" data-background-opacity="0.12" data-background-size="cover">
+      <div class="qhead">↔️ 貼身 vs 包在最外層？拖動看解答</div>
+      <p class="lead" style="margin-bottom:0.3em;">前提：衣物是乾的。答案取決於你當下的狀態與裝備。</p>
+      <div style="position:relative; max-width:860px; height:300px; margin:0 auto; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+        <div class="viz-face" style="background:linear-gradient(135deg,#33232a,#241a20);">
+          <div class="vf-title" style="color:var(--warn);">A · 直接貼身（不推薦）</div>
+          <ul>
+            <li>鋁膜高導熱，皮膚熱量<b>直接傳導</b>散失</li>
+            <li>汗水無法蒸發，積在毯內 → 更快失溫</li>
+            <li>容易覺得「濕冷」</li>
+          </ul>
+        </div>
+        <div class="viz-face" id="viz-after" style="background:linear-gradient(135deg,#12362a,#0d2a3a); clip-path:inset(0 100% 0 0);">
+          <div class="vf-title" style="color:var(--success);">B · 穿好衣物再包外層 ⭐ 最推薦</div>
+          <ul>
+            <li>衣物負責阻「傳導」、鎖住加熱過的空氣</li>
+            <li>求生毯負責反射「輻射」＋防風阻「對流」</li>
+            <li>三種散熱一次阻斷</li>
+          </ul>
+        </div>
+        <div id="viz-divider" style="position:absolute; top:0; left:0; width:3px; height:100%; background:linear-gradient(to bottom,transparent,var(--accent2),transparent); box-shadow:0 0 12px var(--accent2); pointer-events:none;"></div>
+      </div>
+      <input id="viz-slider" data-prevent-swipe type="range" min="0" max="100" value="0" style="width:70%; max-width:600px; margin-top:16px; accent-color:var(--accent2); touch-action:none;" />
+      <div class="callout blue">🥪 極寒 / 強風的「三明治包法」：內層排汗+保暖衣 → 中層求生毯（包外、鎖熱防風）→ 外層防風防水外套（壓住求生毯，防被吹走撕裂）。</div>
+    </section>
+
+    <!-- 15 塑膠袋 + 蠟燭 原理 -->
+    <section data-background-image="images/bagcandle.png" data-background-opacity="0.2" data-background-size="cover">
+      <div class="eyebrow">想一想</div>
+      <h2>大塑膠袋 ＋ 小蠟燭：什麼原理？</h2>
+      <p class="lead">用大塑膠袋（可完整套住自己）搭配一根小蠟燭。這是用什麼保暖原理做到的？</p>
+      <div class="adv-grid cols-3" style="margin-top:0.3em;">
+        <div class="adv-card fragment"><div class="adv-title">① 密閉留住暖空氣</div>
+          <div class="adv-desc">塑膠袋＝封閉空間<br>擋住對流、把體溫加熱的空氣鎖在裡面</div></div>
+        <div class="adv-card fragment"><div class="adv-title">② 蠟燭微熱回溫</div>
+          <div class="adv-desc">一根小蠟燭的熱<br>在密閉小空間就能明顯提高體感溫度</div></div>
+        <div class="adv-card fragment"><div class="adv-title">③ 求生毯反射</div>
+          <div class="adv-desc">內層再裹救生毯<br>把輻射熱反射回身體、熱不流失</div></div>
+      </div>
+      <div class="callout warn fragment">⚠️ 蠟燭要用碗 / 鋁殼裝穩，注意通風與燒融塑膠。密閉空間明火有一氧化碳與燒穿風險，全程保持警覺。</div>
+    </section>
+
+    <!-- 16 塑膠袋 包覆實作 -->
+    <section data-background-image="images/bagcandle.png" data-background-opacity="0.13" data-background-size="cover">
+      <h2>大塑膠袋這樣穿</h2>
+      <div class="vs-grid" style="max-width:840px; margin:0.2em auto 0;">
+        <div class="vs-col right-col">
+          <div class="vs-label">① 露宿袋式包覆（最推薦）</div>
+          <ul>
+            <li>袋底中央挖 10–15cm 呼吸孔（露出眼鼻口）</li>
+            <li>由上往下套住頭與整個上半身</li>
+            <li>雙手縮回袋內、交叉抱胸，熱量集中核心</li>
+            <li>屁股下墊背包/衣物/石頭，隔絕冰冷地面</li>
+          </ul>
+        </div>
+        <div class="vs-col right-col" style="border-top-color:var(--accent2);">
+          <div class="vs-label" style="color:var(--accent2)">② 雙袋密封法（極低溫）</div>
+          <ul>
+            <li>下半身套一個：從腳底往上拉到胸口（像穿裙）</li>
+            <li>上半身套一個（已挖呼吸孔）：由上往下套住</li>
+            <li>兩袋在腰腹重疊 → 完全防風防水的密閉空間</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout warn">⚠️ 安全鐵則：口鼻<b>絕不能封死</b>（否則二氧化碳中毒 / 窒息）；每隔一段時間拉開袋口排濕氣，避免反潮弄濕內層衣物。</div>
+    </section>
+
+    <!-- 17 情境思考：衣服濕了 -->
+    <section data-background-image="images/wet.png" data-background-opacity="0.2" data-background-size="cover">
+      <div class="eyebrow">情境思考</div>
+      <h2>如果身上的衣服全濕了呢？</h2>
+      <p class="lead">濕衣讓散熱暴增（水寒效應約 25 倍）。這時「保暖衣物 ↔ 求生毯」的關係就會改變。</p>
+      <div class="list-card">
+        <b>先處理濕</b>：能換就換乾衣；不能換就盡量擰乾、脫掉最濕的一件。<br>
+        <b>濕衣時的求生毯</b>：保暖層已失效，求生毯可<span class="hot">改為較貼近身體</span>使用，先阻斷輻射與對流、擋住風，爭取時間。<br>
+        <b>務必隔絕地面</b>、避免久靜不動，並持續產熱（進食行動糧、輕微活動）。<br>
+        <b>核心回溫</b>：熱水瓶放脖子 / 腋下 / 胯下，由近心端往四肢慢慢回溫。
+      </div>
+      <div class="callout blue">💡 沒有標準答案：貼身還是外層，端看<b>你當下的狀態與手上的裝備</b>。乾燥時外層最佳；濕冷時，先止血式地阻斷散熱與防風才是重點。</div>
+    </section>
+
+    <!-- 18 收束 -->
+    <section data-background-image="images/ending.png" data-background-opacity="0.45" data-background-size="cover">
+      <div class="end-slide">
+        <h1 style="color:var(--accent2);">先禦寒，再活久一點</h1>
+        <p class="tagline">求生三角形（定位 · 通報 · 自救）× 333 原則 × 刁山小包</p>
+        <p class="tagline" style="margin-top:1em; color:var(--accent);">冷了就穿、濕了就換、風大迫降、保持乾燥 —— 把體溫守住，就是最強的求生術。</p>
+        <p style="font-size:0.4em; color:#7a8694; margin-top:1.4em;">← 左側把手可隨時匿名提問 🙋</p>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- 全域提問牆側邊欄 -->
+<div id="qa-overlay"></div>
+<aside id="qa-sidebar" data-prevent-swipe>
+  <button id="qa-handle" aria-label="開關提問牆">
+    <span style="font-size:19px;">🙋</span>
+    <span style="writing-mode:vertical-rl; letter-spacing:3px; font-weight:700; font-size:14px;">提問牆</span>
+    <span class="qh-dot"></span>
+  </button>
+  <div class="qa-inner">
+    <div style="font-size:19px; font-weight:700; color:var(--accent2); margin-bottom:16px;">🙋 匿名提問牆 <span class="live-badge">LIVE</span></div>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+      <input id="qa-input" class="ui-input" type="text" placeholder="輸入問題，按 Enter…" maxlength="80" />
+      <button id="qa-btn" class="ui-btn">送出提問</button>
+    </div>
+    <div id="qa-list" style="flex:1; overflow-y:auto; padding-right:4px;"></div>
+  </div>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+  function deckSize(){
+    const portrait = window.matchMedia('(orientation: portrait)').matches;
+    const w = window.innerWidth, h = window.innerHeight;
+    if(portrait && w < 760){
+      const vh = Math.max(860, Math.round(460 * h / Math.max(1, w)));
+      return { width:460, height:vh, margin:0.01, mobile:true, center:false, touch:false };
+    }
+    return { width:1280, height:760, margin:0.04, mobile:false, center:true, touch:true };
+  }
+  function applyResponsive(){
+    const n = deckSize();
+    document.body.classList.toggle('mobile', n.mobile);
+    Reveal.configure({ width:n.width, height:n.height, margin:n.margin, center:n.center, touch:n.touch, view:null });
+    Reveal.layout();
+    setTimeout(()=>{ const id=Reveal.getCurrentSlide&&Reveal.getCurrentSlide()?.id;
+      if(id==='slide-wordcloud') window.drawWordCloud&&window.drawWordCloud();
+      if(id==='slide-chart') window.initChart&&window.initChart(); }, 250);
+  }
+  const ds = deckSize();
+  document.body.classList.toggle('mobile', ds.mobile);
+  Reveal.initialize({
+    hash:true, transition:'slide', backgroundTransition:'fade',
+    center:ds.center, touch:ds.touch, progress:true, controls:true, slideNumber:'c/t',
+    width:ds.width, height:ds.height, margin:ds.margin,
+    minScale:0.2, maxScale:1.6,
+    view:null, scrollActivationWidth:null, plugins:[]
+  });
+  Reveal.on('ready', applyResponsive);
+  window.addEventListener('load', applyResponsive);
+  let _rzT; window.addEventListener('resize', ()=>{ clearTimeout(_rzT); _rzT=setTimeout(applyResponsive,180); });
+  window.addEventListener('orientationchange', ()=>setTimeout(applyResponsive,250));
+  Reveal.on('slidechanged', e=>{ if(e.currentSlide) e.currentSlide.scrollTop=0; });
+
+  // VIZ 滑桿
+  document.getElementById('viz-slider')?.addEventListener('input', function(){
+    const v = +this.value;
+    document.getElementById('viz-after').style.clipPath = `inset(0 ${100-v}% 0 0)`;
+    document.getElementById('viz-divider').style.left = v + '%';
+  });
+
+  // 333 圖表
+  let _chart = null;
+  window.initChart = function(){
+    if (typeof Chart==='undefined') return;
+    const ctx = document.getElementById('chart-canvas'); if(!ctx) return;
+    const box = ctx.parentElement.getBoundingClientRect();
+    if (box.width < 20){ setTimeout(window.initChart, 250); return; }
+    if (_chart){ _chart.resize(); return; }
+    _chart = new Chart(ctx, {
+      type:'bar',
+      data:{ labels:['失溫（保暖）','缺水','缺食'],
+        datasets:[{ label:'致命前可撐時間（小時）', data:[3,72,504],
+          backgroundColor:['#e8643a','#4fc3f7','#81c784'], borderRadius:8 }] },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ labels:{ color:'#ccc' } },
+          tooltip:{ callbacks:{ label:(c)=>{
+            const v=c.parsed.y; const t= v<24? v+' 小時' : (v/24)+' 天'; return ' 約 '+t; } } } },
+        scales:{ y:{ type:'logarithmic', ticks:{ color:'#aaa',
+              callback:(v)=>[3,12,24,72,168,504].includes(v)? v : '' },
+            grid:{ color:'rgba(255,255,255,0.08)' }, title:{ display:true, text:'小時（對數刻度）', color:'#888' } },
+          x:{ ticks:{ color:'#ddd', font:{ size:13 } }, grid:{ display:false } } } }
+    });
+  };
+
+  // 手機防誤觸
+  document.querySelectorAll('[data-prevent-swipe]').forEach(el => {
+    ['touchstart','touchmove','touchend'].forEach(ev =>
+      el.addEventListener(ev, e => e.stopPropagation(), { passive:false }));
+  });
+</script>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+  import {
+    getFirestore, collection, addDoc, onSnapshot, serverTimestamp,
+    query, orderBy, doc, setDoc, updateDoc, getDocs, deleteDoc
+  } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+  import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
+  import { initializeAppCheck, ReCaptchaV3Provider } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app-check.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBPaIDGb3RaYhxYrXVE_6YndLUi2jLv1R4",
+    authDomain: "html-slide-db.firebaseapp.com",
+    projectId: "html-slide-db",
+    storageBucket: "html-slide-db.firebasestorage.app",
+    messagingSenderId: "1045858073731",
+    appId: "1:1045858073731:web:8d70945fa081f49929afb6"
+  };
+  const app = initializeApp(firebaseConfig);
+  initializeAppCheck(app, { provider: new ReCaptchaV3Provider('6LevoHstAAAAALRLwnA0DSLiXAK8wER_LEM-eP9b'), isTokenAutoRefreshEnabled: true });
+  const fdb = getFirestore(app);
+  const auth = getAuth(app);
+  try { await signInAnonymously(auth); } catch(e){ console.error('匿名登入失敗', e); }
+  const SLUG = 'survival';
+  const COLORS = ['#4fc3f7','#e8643a','#ffb74d','#81c784','#ce93d8','#80deea','#f48fb1'];
+  const userId = 'u_' + Math.random().toString(36).slice(2,9);
+
+  /* === 文字雲 === */
+  const wordsRef = collection(fdb, SLUG + '_wordcloud');
+  let wcData = [];
+  window.wcSubmit = async function() {
+    const input = document.getElementById('wc-input');
+    const word = input.value.trim(); if (!word) return;
+    const btn = document.getElementById('wc-btn'); btn.disabled = true;
+    try { await addDoc(wordsRef, { word, created_at: serverTimestamp() }); input.value=''; }
+    catch(e){ console.error(e); } finally { btn.disabled = false; }
+  };
+  document.getElementById('wc-input')?.addEventListener('keypress', e => { if (e.key==='Enter') window.wcSubmit(); });
+  document.getElementById('wc-btn')?.addEventListener('click', window.wcSubmit);
+  onSnapshot(query(wordsRef, orderBy('created_at','asc')), snap => {
+    const words = []; snap.forEach(d => words.push(d.data().word));
+    const counts = {}; words.forEach(w => counts[w]=(counts[w]||0)+1);
+    wcData = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    document.getElementById('wc-total').textContent = words.length;
+    document.getElementById('wc-unique').textContent = wcData.length;
+    document.getElementById('wc-list').innerHTML = wcData.slice(0,12).map(([w,c])=>
+      `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.06);"><span>${w}</span><span style="color:var(--accent);font-weight:700;">${c}</span></div>`
+    ).join('') || '<div style="color:#555;padding:8px 0;">尚無資料</div>';
+    const empty = document.getElementById('wc-empty'); if (empty) empty.style.display = wcData.length>0?'none':'';
+    window.drawWordCloud();
+  });
+  window.drawWordCloud = function() {
+    const canvas = document.getElementById('wc-canvas');
+    if (!canvas || typeof WordCloud==='undefined') return;
+    const rect = canvas.getBoundingClientRect(); if (rect.width<10||rect.height<10) return;
+    canvas.width=rect.width; canvas.height=rect.height;
+    if (wcData.length===0) return;
+    const maxCount = wcData[0][1];
+    WordCloud(canvas, {
+      list: wcData.map(([w,c])=>[w, Math.max(18, Math.round((c/maxCount)*70))]),
+      gridSize:6, weightFactor:1, fontFamily:'"Microsoft JhengHei","Noto Sans TC",sans-serif',
+      color:()=>COLORS[Math.floor(Math.random()*COLORS.length)], backgroundColor:'transparent', rotateRatio:0.3, shuffle:true
+    });
+  };
+
+  /* === 通用投票工廠 === */
+  function setupPoll(pollId, options, boxId, totalId){
+    const pollRef = doc(fdb, SLUG + '_poll', pollId);
+    let myVote = null;
+    const box = document.getElementById(boxId);
+    if(!box) return;
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.innerHTML = `<div style="display:flex;align-items:center;gap:12px;">
+        <span id="pk-${pollId}-${opt.id}" style="flex:0 0 24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;"></span>
+        <span style="flex:1;text-align:left;">${opt.label}</span>
+        <span style="flex:0 0 120px;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;"><span id="pb-${pollId}-${opt.id}" style="display:block;height:100%;width:0;background:var(--accent2);border-radius:4px;transition:width .4s;"></span></span>
+        <span id="pp-${pollId}-${opt.id}" style="flex:0 0 42px;text-align:right;font-size:0.8em;color:#888;">0%</span></div>`;
+      btn.style.cssText = 'width:100%;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#fff;font-size:0.48em;cursor:pointer;font-family:inherit;';
+      btn.onclick = () => vote(opt.id);
+      box.appendChild(btn);
+    });
+    async function vote(optId){
+      myVote = optId;
+      try { await setDoc(pollRef, { updated_at: serverTimestamp(), votes: { [userId]: optId } }, { merge:true }); }
+      catch(e){ console.error(e); }
+    }
+    onSnapshot(pollRef, snap => {
+      const votes = (snap.data()||{}).votes || {};
+      const counts = {}; options.forEach(o=>counts[o.id]=0);
+      Object.values(votes).forEach(v=>{ if(counts[v]!==undefined) counts[v]++; });
+      const total = Object.values(counts).reduce((a,b)=>a+b,0);
+      const totEl = document.getElementById(totalId); if(totEl) totEl.textContent = total;
+      options.forEach(opt => {
+        const pct = total>0? Math.round(counts[opt.id]/total*100):0;
+        document.getElementById('pb-'+pollId+'-'+opt.id).style.width = pct+'%';
+        document.getElementById('pp-'+pollId+'-'+opt.id).textContent = pct+'%';
+        const k = document.getElementById('pk-'+pollId+'-'+opt.id);
+        if (myVote===opt.id){ k.textContent='✓'; k.style.background='var(--accent2)'; k.style.borderColor='var(--accent2)'; }
+        else { k.textContent=''; k.style.background='transparent'; k.style.borderColor='rgba(255,255,255,0.3)'; }
+      });
+    });
+  }
+  setupPoll('priority', [
+    { id:'a', label:'先保暖、禦寒（阻止失溫）' },
+    { id:'b', label:'先找乾淨水源' },
+    { id:'c', label:'先找食物充飢' },
+    { id:'d', label:'立刻想辦法移動下山' },
+  ], 'poll-priority-box', 'poll-priority-total');
+  setupPoll('blanket', [
+    { id:'a', label:'直接貼身，反光面朝內' },
+    { id:'b', label:'先穿好保暖衣物，再包最外層' },
+    { id:'c', label:'只鋪在地上隔絕地面' },
+  ], 'poll-blanket-box', 'poll-blanket-total');
+
+  /* === 匿名提問牆 === */
+  const qaRef = collection(fdb, SLUG + '_qa');
+  window.qaSubmit = async function() {
+    const input = document.getElementById('qa-input');
+    const text = input.value.trim(); if (!text) return;
+    const btn = document.getElementById('qa-btn'); btn.disabled = true;
+    try { await addDoc(qaRef, { text, likes:0, created_at: serverTimestamp() }); input.value=''; }
+    catch(e){ console.error(e); } finally { btn.disabled = false; }
+  };
+  document.getElementById('qa-input')?.addEventListener('keypress', e => { if (e.key==='Enter') window.qaSubmit(); });
+  document.getElementById('qa-btn')?.addEventListener('click', window.qaSubmit);
+  window.qaLike = async function(id, cur) {
+    try { await updateDoc(doc(fdb, SLUG+'_qa', id), { likes: (cur||0)+1 }); } catch(e){ console.error(e); }
+  };
+  function escapeHtml(s){ return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  onSnapshot(query(qaRef, orderBy('created_at','desc')), snap => {
+    const items = []; snap.forEach(d => items.push({ id:d.id, ...d.data() }));
+    items.sort((a,b)=>(b.likes||0)-(a.likes||0));
+    const list = document.getElementById('qa-list');
+    list.innerHTML = items.length ? items.map(q =>
+      `<div class="qa-item"><span class="qa-text">${escapeHtml(q.text)}</span>
+       <button class="qa-like" onclick="qaLike('${q.id}',${q.likes||0})">👍 ${q.likes||0}</button></div>`
+    ).join('') : '<div style="color:#555;text-align:center;padding:20px;font-size:14px;">還沒有問題，當第一個發問的人 🙋</div>';
+  });
+
+  /* === 提問牆開關 === */
+  const qaSidebar = document.getElementById('qa-sidebar');
+  const qaOverlay = document.getElementById('qa-overlay');
+  window.toggleQA = function(force){
+    const open = (force !== undefined) ? force : !qaSidebar.classList.contains('open');
+    qaSidebar.classList.toggle('open', open);
+    qaOverlay.classList.toggle('show', open);
+    if (open) setTimeout(()=>document.getElementById('qa-input')?.focus(), 300);
+  };
+  document.getElementById('qa-handle')?.addEventListener('click', ()=>window.toggleQA());
+  qaOverlay?.addEventListener('click', ()=>window.toggleQA(false));
+
+  /* === 老師專用清除 === */
+  window.clearInteractions = async function(silent){
+    let total=0;
+    for(const c of [SLUG+'_wordcloud', SLUG+'_qa']){
+      const snap = await getDocs(collection(fdb,c));
+      for(const d of snap.docs){ await deleteDoc(d.ref); total++; }
+    }
+    for(const p of ['priority','blanket']){ try{ await deleteDoc(doc(fdb, SLUG+'_poll', p)); }catch(e){} }
+    if(!silent) alert('已清空互動資料，共 '+total+' 筆。');
+    return total;
+  };
+  if(new URLSearchParams(location.search).get('reset')==='1'){
+    setTimeout(()=>{ if(confirm('【老師專用】確定清空本簡報所有互動資料？')) window.clearInteractions(); }, 800);
+  }
+
+  /* === 切頁重繪 === */
+  Reveal.on('slidechanged', e => {
+    const id = e.currentSlide?.id;
+    if (id === 'slide-wordcloud') setTimeout(window.drawWordCloud, 150);
+    if (id === 'slide-chart')     setTimeout(window.initChart, 150);
+  });
+  setTimeout(()=>{ if(Reveal.getCurrentSlide && Reveal.getCurrentSlide()?.id==='slide-chart') window.initChart(); }, 600);
+</script>
+
+</body>
+</html>
