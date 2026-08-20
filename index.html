@@ -45,7 +45,7 @@
     .title-slide .author { margin-top:1.6em; font-size:0.42em; color:#888; }
 
     /* === 通用小標 / 引導字 === */
-    .lead { font-size:0.5em; color:#cfd8e3; max-width:36em; margin:0 auto 0.4em; text-wrap:balance; line-height:1.7; }
+    .lead { font-size:0.5em; color:#cfd8e3; max-width:36em; margin:0 auto 0.4em; text-wrap:balance; line-height:1.7; text-align:center; }
     .eyebrow { color:var(--accent); font-weight:700; font-size:0.5em; letter-spacing:0.06em; }
 
     /* === 優勢卡（並列特點）=== */
@@ -254,14 +254,13 @@
         <h1>野外求生原理與保暖原則</h1>
         <h2 style="color:var(--accent); margin-top:0.2em;">先禦寒，才能活得久一點</h2>
         <p class="subtitle">求生三角形　·　333 原則　·　刁山小包<br>熱的三原理　·　三層穿衣　·　求生毯與塑膠袋保暖</p>
-        <p class="author">戶外教育 / 2026</p>
       </div>
     </section>
 
     <!-- 2 破冰 文字雲 -->
     <section id="slide-wordcloud" data-background-image="images/wordcloud.png" data-background-opacity="0.15" data-background-size="cover">
       <h2 style="font-size:1.05em; margin-bottom:0.15em;">單日輕鬆行，需要帶保暖裝備嗎？</h2>
-      <p class="lead">聽到「野外求生」，你腦中第一個浮現的畫面是什麼？打一個關鍵詞。</p>
+      <p class="lead" style="text-align:left; max-width:1120px; margin-left:auto; margin-right:auto;">聽到「野外求生」，你腦中第一個浮現的畫面是什麼？打一個關鍵詞。</p>
       <div style="display:grid; grid-template-columns:250px 1fr; gap:14px; height:430px; max-width:1120px; margin:0 auto;">
         <div style="display:flex; flex-direction:column; gap:10px;">
           <div class="wc-form" style="background:rgba(255,255,255,0.06); border-radius:10px; padding:14px;">
@@ -287,7 +286,7 @@
     <section data-background-image="images/timing.png" data-background-opacity="0.16" data-background-size="cover">
       <div class="eyebrow">WHEN</div>
       <h2>什麼時候該切換到「求生模式」？</h2>
-      <p class="lead">原本的登山計畫被打斷、無法照原訂節奏安全下山時，就進入求生思維。出現任一狀況，先停下、重新評估。</p>
+      <p class="lead">原本的登山計畫被打斷、無法按原定節奏安全下山時，就直接進入求生思維。<br>出現任何一個狀況，需停下來重新評估。</p>
       <div class="adv-grid cols-4">
         <div class="adv-card"><div class="adv-icon"><img src="images/injury.png" alt=""></div>
           <div class="adv-title">有人受傷</div>
@@ -309,7 +308,7 @@
     <section data-background-image="images/goal.png" data-background-opacity="0.2" data-background-size="cover">
       <div class="eyebrow">GOAL</div>
       <h2>最大的目標：讓自己活得久一點</h2>
-      <p class="lead">野外求生不是逞英雄脫困、硬撐下山，而是<b style="color:var(--accent)">用最小的消耗撐到獲救</b>。多數失溫、失蹤者，都是「硬撐」撐出來的。</p>
+      <p class="lead">野外求生不是逞英雄脫困，而是<b style="color:var(--accent)">用最小的消耗撐到獲救</b>。</p>
       <div class="quote-box">「別總想靠自己解決問題。活著回來的人，才有被罵的機會。」</div>
       <p class="lead" style="margin-top:0.3em;">要活得久，就靠三件事同時運作 —— 下一頁的<b style="color:var(--accent2)">求生三角形</b>。</p>
     </section>
@@ -317,11 +316,7 @@
     <!-- 5 求生三角形 -->
     <section data-background-image="images/triangle.png" data-background-opacity="0.14" data-background-size="cover">
       <h2 style="margin-bottom:0.05em;">戶外求生三角形</h2>
-      <p class="lead" style="margin-bottom:0.5em;">
-        <span style="color:var(--success);font-weight:700;">定位</span> ·
-        <span style="color:var(--accent2);font-weight:700;">通報</span> ·
-        <span style="color:var(--accent);font-weight:700;">自救</span>　三個角缺一不可 ——
-        <b style="color:var(--warn)">沒有一個方法是保證有用</b>，要多重準備、靈活運用。</p>
+      <p class="lead" style="margin-bottom:0.5em; max-width:none; white-space:nowrap; font-size:0.46em;"><span style="color:var(--success);font-weight:700;">定位</span> · <span style="color:var(--accent2);font-weight:700;">通報</span> · <span style="color:var(--accent);font-weight:700;">自救</span>　三個角缺一不可 —— <b style="color:var(--warn)">沒有一個方法是保證有用</b>，要多重準備、靈活運用。</p>
       <div class="tri-cards">
         <div class="pillar green">
           <div class="pillar-head"><img src="images/locate.png" alt=""><div class="pn">（一）定位<small>LOCATE</small></div></div>
@@ -363,9 +358,9 @@
     <!-- 6 333 原則 -->
     <section id="slide-chart" data-background-image="images/principle333.png" data-background-opacity="0.16" data-background-size="cover">
       <h2>333 原則：先禦寒，再水，最後食物</h2>
-      <p class="lead">失溫 3 小時就致命，缺水約 3 天，缺食約 3 週。所以自救的第一順位永遠是<b style="color:var(--accent)">保暖</b>。</p>
-      <div style="max-width:760px; height:300px; margin:0.2em auto 0;"><canvas id="chart-canvas"></canvas></div>
-      <div class="callout">💡 切勿花力氣找食物而導致失溫、脫水 —— 人沒那麼容易餓死，卻可能幾小時內失溫。</div>
+      <p class="lead" style="margin-bottom:0.2em;">失溫 3 小時就致命，缺水約 3 天，缺食約 3 週。所以自救的第一順位永遠是<b style="color:var(--accent)">保暖</b>。</p>
+      <div style="max-width:720px; height:250px; margin:0 auto;"><canvas id="chart-canvas"></canvas></div>
+      <div class="callout" style="margin-top:0.9em;">💡 切勿花力氣找食物而導致失溫、脫水 —— 人沒那麼容易餓死，卻可能幾小時內失溫。</div>
     </section>
 
     <!-- 7 投票：優先順序 -->
@@ -379,8 +374,8 @@
     <!-- 8 自救：紮營 / 露宿 -->
     <section data-background-image="images/camp.png" data-background-opacity="0.18" data-background-size="cover">
       <h2>自救：安全紮營 / 緊急露宿</h2>
-      <p class="lead">發出求救後，在附近找<b style="color:var(--accent2)">最避風</b>的位置設緊急避難處，原地待援（稜線風大易失溫）。</p>
-      <div class="list-card">
+      <p class="lead" style="max-width:none;"><span style="white-space:nowrap">發出求救後，在附近找<b style="color:var(--accent2)">最避風</b>的位置</span>設緊急避難處，原地待援（稜線風大易失溫）。</p>
+      <div class="list-card" style="font-size:0.58em; padding:20px 30px; max-width:34em;">
         <b>選點</b>：背風、避雨；四周有石頭擋風、大樹遮雨。<br>
         <b>隔絕地面</b>：屁股下墊背包 / 衣物 / 大石頭，<span class="hot">絕不直接坐冰冷潮濕地面</span>。<br>
         <b>保持乾燥</b>：貼身衣物絕不能是濕的，淋濕立刻換乾衣。<br>
@@ -396,7 +391,7 @@
       <div class="eyebrow">EMERGENCY KIT</div>
       <h2>緊急避難包 ＝ 刁山小包</h2>
       <p class="lead">「刁山」是台語的<b style="color:var(--accent)">卡在山上</b>。刁山小包，就是為了在山上緊急過夜、<b style="color:var(--accent2)">預防失溫</b>而準備的簡易求生組合 —— 自救、救人都好用。</p>
-      <div class="quote-box">「很多人覺得單日行程帶瓶水、午餐就好，幹嘛帶保暖？<br>—— 山裡過一夜，沒帳篷睡袋，你要怎麼不失溫？」</div>
+      <div class="quote-box" style="font-size:0.58em; padding:22px 28px; max-width:27em;">「很多人覺得單日行程帶瓶水、午餐就好，幹嘛帶保暖？<br>—— 山裡過一夜，沒帳篷睡袋，你要怎麼不失溫？」</div>
       <p class="lead" style="margin-top:0.2em;">核心口訣：<b style="color:var(--accent2)">刀 · 燈 · 火 · 繩</b>。</p>
     </section>
 
@@ -559,8 +554,8 @@
     <section data-background-image="images/wet.png" data-background-opacity="0.2" data-background-size="cover">
       <div class="eyebrow">情境思考</div>
       <h2>如果身上的衣服全濕了呢？</h2>
-      <p class="lead">濕衣讓散熱暴增（水寒效應約 25 倍）。這時「保暖衣物 ↔ 求生毯」的關係就會改變。</p>
-      <div class="list-card">
+      <p class="lead" style="max-width:none;"><span style="white-space:nowrap">濕衣讓散熱暴增（水寒效應約 25 倍）</span>。這時「保暖衣物 ↔ 求生毯」的關係就會改變。</p>
+      <div class="list-card" style="font-size:0.58em; padding:20px 30px; max-width:34em;">
         <b>先處理濕</b>：能換就換乾衣；不能換就盡量擰乾、脫掉最濕的一件。<br>
         <b>濕衣時的求生毯</b>：保暖層已失效，求生毯可<span class="hot">改為較貼近身體</span>使用，先阻斷輻射與對流、擋住風，爭取時間。<br>
         <b>務必隔絕地面</b>、避免久靜不動，並持續產熱（進食行動糧、輕微活動）。<br>
