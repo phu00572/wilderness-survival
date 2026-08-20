@@ -49,9 +49,9 @@
     .eyebrow { color:var(--accent); font-weight:700; font-size:0.5em; letter-spacing:0.06em; }
 
     /* === 優勢卡（並列特點）=== */
-    .adv-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:0.5em; }
-    .adv-grid.cols-3 { grid-template-columns:repeat(3,1fr); }
-    .adv-grid.cols-4 { grid-template-columns:repeat(4,1fr); }
+    .adv-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:0.5em; max-width:1160px; margin-left:auto; margin-right:auto; }
+    .adv-grid.cols-3 { grid-template-columns:repeat(3,1fr); max-width:1000px; }
+    .adv-grid.cols-4 { grid-template-columns:repeat(4,1fr); max-width:1160px; }
     .adv-card {
       background:rgba(255,255,255,0.05); border-top:4px solid var(--accent2);
       border-radius:8px; padding:16px 14px; text-align:center;
@@ -262,7 +262,7 @@
     <section id="slide-wordcloud" data-background-image="images/wordcloud.png" data-background-opacity="0.15" data-background-size="cover">
       <h2 style="font-size:1.05em; margin-bottom:0.15em;">單日輕鬆行，需要帶保暖裝備嗎？</h2>
       <p class="lead">聽到「野外求生」，你腦中第一個浮現的畫面是什麼？打一個關鍵詞。</p>
-      <div style="display:grid; grid-template-columns:250px 1fr; gap:14px; height:430px;">
+      <div style="display:grid; grid-template-columns:250px 1fr; gap:14px; height:430px; max-width:1120px; margin:0 auto;">
         <div style="display:flex; flex-direction:column; gap:10px;">
           <div class="wc-form" style="background:rgba(255,255,255,0.06); border-radius:10px; padding:14px;">
             <input id="wc-input" class="ui-input" type="text" placeholder="輸入關鍵詞…" maxlength="20" />
